@@ -1,6 +1,6 @@
 {
     "name": "ForceItemsEqualShare",
-    "version_number": "1.0.0",
+    "version_number": "1.0.1",
     "website_url": "https://github.com/Mordrog/RoR2-ForceItemsEqualShare",
     "description": "The mod should prevent players from picking up items when they have significantly more than the player with the fewest items.",
     "dependencies": [
