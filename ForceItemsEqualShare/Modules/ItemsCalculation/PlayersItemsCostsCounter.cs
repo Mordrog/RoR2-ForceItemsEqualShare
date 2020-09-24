@@ -21,6 +21,28 @@ namespace Mordrog
             return leastItemsCosts;
         }
 
+        public static CharacterMaster GetPlayerWithLeastItemsCosts()
+        {
+            uint leastItemsCosts = uint.MaxValue;
+            CharacterMaster playerWithLeastItemsCosts = null;
+
+            foreach (var player in PlayersHelper.GetAllPlayers())
+            {
+                if (player.IsDeadAndOutOfLivesServer())
+                    continue;
+
+                var playerItemsCost = GetItemsCosts(player.inventory);
+
+                if (playerItemsCost < leastItemsCosts)
+                {
+                    leastItemsCosts = playerItemsCost;
+                    playerWithLeastItemsCosts = player;
+                }
+            }
+
+            return playerWithLeastItemsCosts;
+        }
+
         public static uint GetItemsCosts(Inventory inventory)
         {
             uint itemsCosts = 0;

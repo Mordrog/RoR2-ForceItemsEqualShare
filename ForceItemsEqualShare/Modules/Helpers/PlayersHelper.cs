@@ -21,5 +21,10 @@ namespace Mordrog
         {
             return PlayerCharacterMasterController.instances.Select(p => p.master);
         }
+
+        public static NetworkUser GetUser(CharacterMaster player)
+        {
+            return NetworkUser.readOnlyInstancesList.FirstOrDefault(u => u.master == player);
+        }
     }
 }

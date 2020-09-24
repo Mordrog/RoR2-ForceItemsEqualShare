@@ -19,6 +19,17 @@ namespace Mordrog
             if (player && watchedPrintedItems.TryGetValue(player.masterIndex, out PrintedItems playerPrintedItems))
             {
                 var itemTier = ItemCatalog.GetItemDef(pickupIndex.itemIndex).tier;
+                return playerPrintedItems.AreTherePrintedItems(itemTier);
+            }
+
+            return false;
+        }
+
+        public bool TryConsumingPlayersPrintedItems(CharacterMaster player, PickupIndex pickupIndex)
+        {
+            if (player && watchedPrintedItems.TryGetValue(player.masterIndex, out PrintedItems playerPrintedItems))
+            {
+                var itemTier = ItemCatalog.GetItemDef(pickupIndex.itemIndex).tier;
                 return playerPrintedItems.RemovePrintedItemIfExists(itemTier);
             }
 
