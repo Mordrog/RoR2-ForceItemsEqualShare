@@ -17,9 +17,9 @@ Threshold is calulcated by taking summed cost of inventory of player who is tryi
 ### Default Config Settings
 | Setting                       | Default Value |
 | :---------------------------- | :-----------: |
-| ScaleItemsCostsDifference     |           0.2 |
+| ScaleItemsCostsDifference     |           0.3 |
 | MinItemsCostsDifference       |             6 |
-| MaxItemsCostsDifference       |            12 |
+| MaxItemsCostsDifference       |            20 |
 | WhiteItemsCost                |             1 |
 | GreenItemsCost                |             2 |
 | RedItemsCost                  |             4 |
@@ -49,4 +49,9 @@ ScrapWhite\
 ScrapGreen\
 ScrapRed\
 ScrapYellow
+
+### Changelog
+#### 1.1.0
+- Rebalanced default config values to allow better players to get more items late game
+- Added chat messages for players who tries to pick item when they have too many of them
 
