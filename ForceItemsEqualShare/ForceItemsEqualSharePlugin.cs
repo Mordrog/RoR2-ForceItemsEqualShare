@@ -25,7 +25,7 @@ namespace Mordrog
             PluginConfig.ScaleItemsCostsDifference = Config.Bind<float>(
                 "Settings",
                 "ScaleItemsCostsDifference",
-                0.2f,
+                0.3f,
                 "The scale items costs difference between the player picking item and the player with the lowest number of items costs.\n" +
                 "Too many items formula: Min(Max(PlayersItems * ScaleItemsDifference, MinItemsDifference), MaxItemsDifference) <= PlayersItems - LeastPlayerItems\n" +
                 "Have to be between 0 and 1"
@@ -42,7 +42,7 @@ namespace Mordrog
             PluginConfig.MaxItemsCostsDifference = Config.Bind<uint>(
                 "Settings",
                 "MaxItemsCostsDifference",
-                12,
+                20,
                 "The max items costs difference between the player trying to pick an item and the player with the lowest number of items costs.\n" +
                 "Have to be equal or bigger then MinItemsDifference"
             );
