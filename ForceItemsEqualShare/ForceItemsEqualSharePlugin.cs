@@ -34,7 +34,7 @@ namespace Mordrog
             PluginConfig.MinItemsCostsDifference = Config.Bind<uint>(
                 "Settings",
                 "MinItemsCostsDifference",
-                6,
+                5,
                 "The min items costs difference between the player trying to pick an item and the player with the lowest number of items costs.\n" +
                 "Have to be equal or lesser then MaxItemsDifference"
             );
@@ -42,7 +42,7 @@ namespace Mordrog
             PluginConfig.MaxItemsCostsDifference = Config.Bind<uint>(
                 "Settings",
                 "MaxItemsCostsDifference",
-                20,
+                15,
                 "The max items costs difference between the player trying to pick an item and the player with the lowest number of items costs.\n" +
                 "Have to be equal or bigger then MinItemsDifference"
             );
