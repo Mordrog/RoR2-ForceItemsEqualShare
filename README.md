@@ -13,13 +13,15 @@ Inventory costs are calculated by taking each item from the player's inventory, 
 #### Threshold
 Threshold is calulcated by taking summed cost of inventory of player who is trying to pick item, multiplying it by **ScaleItemsCostsDifference**, and then checking whenever it falls between **MinItemsCostsDifference** and **MaxItemsCostsDifference**. If it does, then calulcated number is taken as thereshold, if not then min or max value are taken.
 
+#### Share item
+If player can't pick item, they can ping it and use interaction button (E on keyboard by default) to share it with player with lowest inventory costs
 
 ### Default Config Settings
 | Setting                       | Default Value |
 | :---------------------------- | :-----------: |
 | ScaleItemsCostsDifference     |           0.3 |
-| MinItemsCostsDifference       |             6 |
-| MaxItemsCostsDifference       |            20 |
+| MinItemsCostsDifference       |             5 |
+| MaxItemsCostsDifference       |            15 |
 | WhiteItemsCost                |             1 |
 | GreenItemsCost                |             2 |
 | RedItemsCost                  |             4 |
@@ -29,28 +31,33 @@ Threshold is calulcated by taking summed cost of inventory of player who is tryi
 ### Additional infos
 
 #### Mod is ignored on maps:
-Bazzar\
-Void
+- Bazzar
+- Void
+- Moon
 
 #### Items ignored in calulcation:
-ArtifactKey\
-ExtraLifeConsumed\
-TitanGoldDuringTP\
-TonicAffliction\
-CaptainDefenseMatrix\
+- ArtifactKey
+- ExtraLifeConsumed
+- TitanGoldDuringTP
+- TonicAffliction
+- CaptainDefenseMatrix
 
 #### Items ignored while picking up:
-ArtifactKey\
-ExtraLifeConsumed\
-TitanGoldDuringTP\
-TonicAffliction\
-CaptainDefenseMatrix\
-ScrapWhite\
-ScrapGreen\
-ScrapRed\
-ScrapYellow
+- ArtifactKey
+- ExtraLifeConsumed
+- TitanGoldDuringTP
+- TonicAffliction
+- CaptainDefenseMatrix
+- ScrapWhite
+- ScrapGreen
+- ScrapRed
+- ScrapYellow
 
 ### Changelog
+#### 1.2.0
+- Added abbility to share item with player who have lowest inventory costs via ping + interaction
+- Rebalanced default config after adding above option
+- Added Moon to ignored map list
 #### 1.1.0
 - Rebalanced default config values to allow better players to get more items late game
 - Added chat messages for players who tries to pick item when they have too many of them
