@@ -17,6 +17,11 @@ namespace Mordrog
             return null;
         }
 
+        public static Interactor GetPlayersInteractor(CharacterMaster player)
+        {
+            return player?.GetBodyObject()?.GetComponent<InteractionDriver>()?.interactor;
+        }
+
         public static IEnumerable<CharacterMaster> GetAllPlayers()
         {
             return PlayerCharacterMasterController.instances.Select(p => p.master);

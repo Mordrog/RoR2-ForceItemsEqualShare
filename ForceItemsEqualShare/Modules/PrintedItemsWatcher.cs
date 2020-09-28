@@ -25,7 +25,7 @@ namespace Mordrog
             return false;
         }
 
-        public bool TryConsumingPlayersPrintedItems(CharacterMaster player, PickupIndex pickupIndex)
+        public bool TryConsumePlayersPrintedItem(CharacterMaster player, PickupIndex pickupIndex)
         {
             if (player && watchedPrintedItems.TryGetValue(player.masterIndex, out PrintedItems playerPrintedItems))
             {

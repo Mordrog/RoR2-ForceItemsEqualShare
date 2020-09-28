@@ -1,5 +1,6 @@
 ﻿using RoR2;
 using System;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 
 namespace Mordrog
@@ -8,60 +9,74 @@ namespace Mordrog
     {
         private PrintedItemsWatcher printedItemsWatcher;
         private CurrentStageWatcher currentStageWatcher;
+        private PingedItemsWatcher pingedItemsWatcher;
 
         public void Awake()
         {
             printedItemsWatcher = base.gameObject.AddComponent<PrintedItemsWatcher>();
             currentStageWatcher = base.gameObject.AddComponent<CurrentStageWatcher>();
+            pingedItemsWatcher = base.gameObject.AddComponent<PingedItemsWatcher>();
 
             currentStageWatcher.OnCurrentStageChanged += CurrentStageWatcher_OnCurrentStageChanged;
             On.RoR2.GenericPickupController.AttemptGrant += GenericPickupController_AttemptGrant;
             On.RoR2.GenericPickupController.OnInteractionBegin += GenericPickupController_OnInteractionBegin;
         }
 
+        private void CurrentStageWatcher_OnCurrentStageChanged()
+        {
+            printedItemsWatcher.ClearWatchedPrintedItems();
+            pingedItemsWatcher.ClearWatchedPingedItems();
+        }
+
         private void GenericPickupController_OnInteractionBegin(On.RoR2.GenericPickupController.orig_OnInteractionBegin orig, GenericPickupController self, Interactor activator)
         {
-            // This method is used only for messages
-            var body = activator.GetComponent<CharacterBody>();
-            var player = PlayersHelper.GetPlayer(body);
+            var player = PlayersHelper.GetPlayer(activator.GetComponent<CharacterBody>());
+            var playerWithLeastItems = PlayersItemsCostsCounter.GetPlayerWithLeastItemsCosts();
+            var playerWithLeastItemsInteractor = PlayersHelper.GetPlayersInteractor(playerWithLeastItems);
 
-            if (!player ||
-                !CheckIfCurrentStageQualifyForSharing() ||
-                !CheckIfItemQualifyForSharing(self.pickupIndex) ||
-                printedItemsWatcher.CheckIfPlayerHasPrintedItems(player, self.pickupIndex) ||
-                !CheckIfPlayerHasTooManyItemsCosts(player))
+            // get item
+            if (CheckIfPlayerCanPickItem(player, self.pickupIndex) ||
+                printedItemsWatcher.CheckIfPlayerHasPrintedItems(player, self.pickupIndex))
             {
                 orig(self, activator);
                 return;
             }
+            // share item
+            if (playerWithLeastItemsInteractor &&
+                CheckIfItemQualifyForSharing(self.pickupIndex) &&
+                pingedItemsWatcher.TryRemoveItemPingedByPlayer(player, self))
+            {
+                self.OnInteractionBegin(playerWithLeastItemsInteractor);
+                return;
+            }
+            // can't pick item
+            else
+            {
+                var user = PlayersHelper.GetUser(player);
 
-            var user = PlayersHelper.GetUser(player);
-            var playerWithLeastItems = PlayersItemsCostsCounter.GetPlayerWithLeastItemsCosts();
-            var userWithLeastItems = PlayersHelper.GetUser(playerWithLeastItems);
-            if (user && userWithLeastItems)
-                ChatHelper.PlayerHaveTooManyItems(user.userName, userWithLeastItems.userName);
-        }
-
-        private void CurrentStageWatcher_OnCurrentStageChanged()
-        {
-            printedItemsWatcher.ClearWatchedPrintedItems();
+                if (user)
+                    ChatHelper.PlayerHasTooManyItems(user.userName);
+            }
         }
 
         private void GenericPickupController_AttemptGrant(On.RoR2.GenericPickupController.orig_AttemptGrant orig, GenericPickupController self, CharacterBody body)
         {
             var player = PlayersHelper.GetPlayer(body);
 
-            if (!player ||
-                !CheckIfCurrentStageQualifyForSharing() ||
-                !CheckIfItemQualifyForSharing(self.pickupIndex) ||
-                printedItemsWatcher.TryConsumingPlayersPrintedItems(player, self.pickupIndex))
+            if (CheckIfPlayerCanPickItem(player, self.pickupIndex) ||
+                printedItemsWatcher.TryConsumePlayersPrintedItem(player, self.pickupIndex))
             {
                 orig(self, body);
                 return;
             }
+        }
 
-            if (!CheckIfPlayerHasTooManyItemsCosts(player))
-                orig(self, body);
+        private bool CheckIfPlayerCanPickItem(CharacterMaster player, PickupIndex pickupIndex)
+        {
+            return !player ||
+                !CheckIfCurrentStageQualifyForSharing() ||
+                !CheckIfItemQualifyForSharing(pickupIndex) ||
+                !CheckIfPlayerHasTooManyItemsCosts(player);
         }
 
         private bool CheckIfCurrentStageQualifyForSharing()
