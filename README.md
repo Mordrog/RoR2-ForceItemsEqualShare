@@ -53,6 +53,10 @@ If player can't pick item, they can ping it and use interaction button (E on key
 - ScrapRed
 - ScrapYellow
 
+## More
+
+Find my other mods here: https://thunderstore.io/package/Mordrog/
+
 ### Changelog
 #### 1.2.0
 - Added abbility to share item with player who have lowest inventory costs via ping + interaction
