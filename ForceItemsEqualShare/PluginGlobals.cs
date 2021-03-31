@@ -39,6 +39,7 @@ namespace Mordrog
             "bazaar",
             "arena", //void
             "moon",
+            "moon2"
         };
     }
 }
