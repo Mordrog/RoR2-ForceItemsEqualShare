@@ -44,7 +44,7 @@ namespace Mordrog
 
             foreach (var itemIndex in inventory.itemAcquisitionOrder)
             {
-                if (PluginGlobals.IgnoredCalculationItems.Contains(itemIndex))
+                if (PluginGlobals.IgnoredCalculationItems.Find(i => i.itemIndex == itemIndex))
                     continue;
 
                 var numberOfStacks = inventory.GetItemCount(itemIndex);

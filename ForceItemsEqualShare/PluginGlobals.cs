@@ -7,29 +7,30 @@ namespace Mordrog
     {
         public static string TooManyItemsMessage = "You have too many items, share some!";
 
-        public static List<ItemIndex> IgnoredCalculationItems = new List<ItemIndex>
+        public static List<ItemDef> IgnoredCalculationItems = new List<ItemDef>
         {
-            ItemIndex.None,
-            ItemIndex.ArtifactKey,
-            ItemIndex.ExtraLifeConsumed,
-            ItemIndex.TitanGoldDuringTP,
-            ItemIndex.TonicAffliction,
-            ItemIndex.CaptainDefenseMatrix
+            RoR2Content.Items.ArtifactKey,
+            RoR2Content.Items.ExtraLifeConsumed,
+            RoR2Content.Items.TitanGoldDuringTP,
+            RoR2Content.Items.TonicAffliction,
+            RoR2Content.Items.CaptainDefenseMatrix,
+            RoR2Content.Items.DrizzlePlayerHelper,
+            RoR2Content.Items.MonsoonPlayerHelper,
+            RoR2Content.Items.InvadingDoppelganger,
         };
 
-        public static List<ItemIndex> IgnoredPickupItems = new List<ItemIndex>
+        public static List<ItemDef> IgnoredPickupItems = new List<ItemDef>
         {
-            ItemIndex.None,
-            ItemIndex.ArtifactKey,
-            ItemIndex.ExtraLifeConsumed,
-            ItemIndex.TitanGoldDuringTP,
-            ItemIndex.TonicAffliction,
-            ItemIndex.CaptainDefenseMatrix,
+            RoR2Content.Items.ArtifactKey,
+            RoR2Content.Items.ExtraLifeConsumed,
+            RoR2Content.Items.TitanGoldDuringTP,
+            RoR2Content.Items.TonicAffliction,
+            RoR2Content.Items.CaptainDefenseMatrix,
 
-            ItemIndex.ScrapWhite,
-            ItemIndex.ScrapGreen,
-            ItemIndex.ScrapRed,
-            ItemIndex.ScrapYellow
+            RoR2Content.Items.ScrapWhite,
+            RoR2Content.Items.ScrapGreen,
+            RoR2Content.Items.ScrapRed,
+            RoR2Content.Items.ScrapYellow,
         };
 
         //Lol is there better way to store/check stages?!?

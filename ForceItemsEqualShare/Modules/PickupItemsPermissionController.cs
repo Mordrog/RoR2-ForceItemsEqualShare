@@ -83,7 +83,7 @@ namespace Mordrog
 
             return pickupDef.itemIndex != ItemIndex.None &&
                    !pickupDef.isLunar &&
-                   !PluginGlobals.IgnoredPickupItems.Contains(pickupIndex.itemIndex);
+                   !PluginGlobals.IgnoredPickupItems.Find(i=> i.itemIndex == pickupDef.itemIndex);
         }
 
         private bool CheckIfUserCanPickItem(NetworkUser user)
