@@ -4,6 +4,12 @@ using UnityEngine.Networking;
 
 namespace Mordrog
 {
+    public enum HowToHandleItemDisproportion
+    {
+        GiveRandomItemToLowestCostsPlayer,
+        PreventBiggestCostsPlayerPickup
+    }
+
     public class PickupItemsPermissionController : NetworkBehaviour
     {
         private PrintedItemsWatcher printedItemsWatcher;
@@ -21,7 +27,7 @@ namespace Mordrog
         // If "orig" method is fired, GenericPickupController_AttemptGrant will happen next
         private void GenericPickupController_OnInteractionBegin(On.RoR2.GenericPickupController.orig_OnInteractionBegin orig, GenericPickupController self, Interactor activator)
         {
-            if (!CheckIfCurrentStageQualifyForSharing() || 
+            if (!CheckIfCurrentStageQualifyForSharing() ||
                 !CheckIfItemQualifyForSharing(self.pickupIndex))
             {
                 orig(self, activator);
@@ -33,6 +39,12 @@ namespace Mordrog
             // get item
             if (printedItemsWatcher.CheckIfUserHasPrintedItems(user, self.pickupIndex) ||
                 CheckIfUserCanPickItem(user))
+            {
+                orig(self, activator);
+                return;
+            }
+            // give random item to lowest cost player
+            else if (PluginConfig.HowToHandleItemDisproportion.Value == HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer)
             {
                 orig(self, activator);
                 return;
@@ -55,7 +67,7 @@ namespace Mordrog
 
         private void GenericPickupController_AttemptGrant(On.RoR2.GenericPickupController.orig_AttemptGrant orig, GenericPickupController self, CharacterBody body)
         {
-            if (!CheckIfCurrentStageQualifyForSharing() || 
+            if (!CheckIfCurrentStageQualifyForSharing() ||
                 !CheckIfItemQualifyForSharing(self.pickupIndex))
             {
                 orig(self, body);
@@ -70,6 +82,39 @@ namespace Mordrog
                 orig(self, body);
                 return;
             }
+            else if (PluginConfig.HowToHandleItemDisproportion.Value == HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer)
+            {
+                var userWithLeastItems = InventoryCostCounter.GetUserWithLeastItemsCosts().user;
+                BoostPlayerWithRandomItem(userWithLeastItems);
+
+                orig(self, body);
+                return;
+            }
+        }
+
+        // method copied from RoR2.Inventory::GiveRandomItems
+        private void BoostPlayerWithRandomItem(NetworkUser user)
+        {
+            if (!user || !user.master || !user.master.inventory)
+                return;
+
+            var inventory = user.master.inventory;
+
+            try
+            {
+                WeightedSelection<List<PickupIndex>> weightedSelection = new WeightedSelection<List<PickupIndex>>(8);
+                weightedSelection.AddChoice(Run.instance.availableTier1DropList, 100f);
+                weightedSelection.AddChoice(Run.instance.availableTier2DropList, 20f);
+
+                List<PickupIndex> list = weightedSelection.Evaluate(UnityEngine.Random.value);
+                PickupDef pickupDef = PickupCatalog.GetPickupDef(list[UnityEngine.Random.Range(0, list.Count)]);
+                inventory.GiveItem((pickupDef != null) ? pickupDef.itemIndex : ItemIndex.None, 1);
+
+                ChatHelper.PlayerBoostedWithItem(user.userName, pickupDef.nameToken, pickupDef.baseColor);
+            }
+            catch (System.ArgumentException)
+            {
+            }
         }
 
         private bool CheckIfCurrentStageQualifyForSharing()
@@ -83,7 +128,7 @@ namespace Mordrog
 
             return pickupDef.itemIndex != ItemIndex.None &&
                    !pickupDef.isLunar &&
-                   !PluginGlobals.IgnoredPickupItems.Find(i=> i.itemIndex == pickupDef.itemIndex);
+                   !PluginGlobals.IgnoredPickupItems.Find(i => i.itemIndex == pickupDef.itemIndex);
         }
 
         private bool CheckIfUserCanPickItem(NetworkUser user)

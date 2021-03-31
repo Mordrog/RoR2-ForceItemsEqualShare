@@ -22,6 +22,13 @@ namespace Mordrog
 
         private void InitConfig()
         {
+            PluginConfig.HowToHandleItemDisproportion = Config.Bind<HowToHandleItemDisproportion>(
+                "Settings",
+                "HowToHandleItemDisproportion",
+                HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer,
+                "Way to handle items disproportion between player with loweset and biggest item costs"
+            );
+
             PluginConfig.ScaleItemsCostsDifference = Config.Bind<float>(
                 "Settings",
                 "ScaleItemsCostsDifference",

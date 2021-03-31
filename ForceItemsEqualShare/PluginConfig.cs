@@ -4,6 +4,9 @@ namespace Mordrog
 {
     public static class PluginConfig
     {
+        public static ConfigEntry<HowToHandleItemDisproportion>
+            HowToHandleItemDisproportion;
+
         public static ConfigEntry<float>
             ScaleItemsCostsDifference;
 
