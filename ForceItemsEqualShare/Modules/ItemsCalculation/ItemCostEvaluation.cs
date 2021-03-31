@@ -4,25 +4,25 @@ namespace Mordrog
 {
     public static class ItemCostEvaluation
     {
-        public static uint GetItemCostEvaluation(ItemIndex item, uint numberOfStacks = 1)
+        public static int GetItemCostEvaluation(ItemIndex item, int numberOfStacks = 1)
         {
             return numberOfStacks * GetItemTierCostEvaluation(ItemCatalog.GetItemDef(item).tier);
         }
 
-        public static uint GetItemTierCostEvaluation(ItemTier itemTier)
+        public static int GetItemTierCostEvaluation(ItemTier itemTier)
         {
             switch (itemTier)
             {
                 case ItemTier.Tier1:
-                    return PluginConfig.WhiteItemsCost.Value;
+                    return (int)PluginConfig.WhiteItemsCost.Value;
                 case ItemTier.Tier2:
-                    return PluginConfig.GreenItemsCost.Value;
+                    return (int)PluginConfig.GreenItemsCost.Value;
                 case ItemTier.Tier3:
-                    return PluginConfig.RedItemsCost.Value;
+                    return (int)PluginConfig.RedItemsCost.Value;
                 case ItemTier.Boss:
-                    return PluginConfig.BossItemsCost.Value;
+                    return (int)PluginConfig.BossItemsCost.Value;
                 case ItemTier.Lunar:
-                    return PluginConfig.BlueItemsCost.Value;
+                    return (int)PluginConfig.BlueItemsCost.Value;
                 case ItemTier.NoTier:
                 default:
                     return 0;

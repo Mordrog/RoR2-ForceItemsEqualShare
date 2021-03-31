@@ -6,38 +6,26 @@ namespace Mordrog
 {
     public class PrintedItemsWatcher : NetworkBehaviour
     {
-        private Dictionary<MasterCatalog.MasterIndex, PrintedItems> watchedPrintedItems = 
-            new Dictionary<MasterCatalog.MasterIndex, PrintedItems>();
+        private Dictionary<NetworkUserId, PrintedItems> watchedPrintedItems = new Dictionary<NetworkUserId, PrintedItems>();
 
         public void Awake()
         {
+            On.RoR2.Run.OnDestroy += Run_OnDestroy;
+            On.RoR2.Run.OnServerSceneChanged += Run_OnServerSceneChanged;
             On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteraction_OnInteractionBegin;
         }
 
-        public bool CheckIfPlayerHasPrintedItems(CharacterMaster player, PickupIndex pickupIndex)
+        private void Run_OnDestroy(On.RoR2.Run.orig_OnDestroy orig, Run self)
         {
-            if (player && watchedPrintedItems.TryGetValue(player.masterIndex, out PrintedItems playerPrintedItems))
-            {
-                var itemTier = ItemCatalog.GetItemDef(pickupIndex.itemIndex).tier;
-                return playerPrintedItems.AreTherePrintedItems(itemTier);
-            }
+            orig(self);
 
-            return false;
+            watchedPrintedItems.Clear();
         }
 
-        public bool TryConsumePlayersPrintedItem(CharacterMaster player, PickupIndex pickupIndex)
+        private void Run_OnServerSceneChanged(On.RoR2.Run.orig_OnServerSceneChanged orig, Run self, string sceneName)
         {
-            if (player && watchedPrintedItems.TryGetValue(player.masterIndex, out PrintedItems playerPrintedItems))
-            {
-                var itemTier = ItemCatalog.GetItemDef(pickupIndex.itemIndex).tier;
-                return playerPrintedItems.RemovePrintedItemIfExists(itemTier);
-            }
+            orig(self, sceneName);
 
-            return false;
-        }
-
-        public void ClearWatchedPrintedItems()
-        {
             watchedPrintedItems.Clear();
         }
 
@@ -46,14 +34,37 @@ namespace Mordrog
             orig(self, activator);
 
             var shopTerminal = self.GetComponent<ShopTerminalBehavior>();
-            var player = PlayersHelper.GetPlayer(activator.GetComponent<CharacterBody>());
+            var user = UsersHelper.GetUser(activator);
 
-            if (shopTerminal && player && CheckIfCostTypeIsItem(self.costType))
+            if (shopTerminal && user && CheckIfCostTypeIsItem(self.costType))
             {
-                if (!watchedPrintedItems.ContainsKey(player.masterIndex))
-                    watchedPrintedItems[player.masterIndex] = new PrintedItems();
-                watchedPrintedItems[player.masterIndex].AddPrintedItem(shopTerminal.itemTier);
+                if (!watchedPrintedItems.ContainsKey(user.id))
+                    watchedPrintedItems[user.id] = new PrintedItems();
+                watchedPrintedItems[user.id].AddPrintedItem(shopTerminal.itemTier);
             }
+        }
+
+        public bool CheckIfUserHasPrintedItems(NetworkUser user, PickupIndex pickupIndex)
+        {
+            if (user && watchedPrintedItems.TryGetValue(user.id, out PrintedItems userPrintedItems))
+            {
+                
+                var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
+                return userPrintedItems.AreTherePrintedItems(itemTier);
+            }
+
+            return false;
+        }
+
+        public bool TryConsumeUserPrintedItem(NetworkUser user, PickupIndex pickupIndex)
+        {
+            if (user && watchedPrintedItems.TryGetValue(user.id, out PrintedItems userPrintedItems))
+            {
+                var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
+                return userPrintedItems.RemovePrintedItemIfExists(itemTier);
+            }
+
+            return false;
         }
 
         private bool CheckIfCostTypeIsItem(CostTypeIndex costType)

@@ -7,48 +7,60 @@ namespace Mordrog
     class PingedItemsWatcher : NetworkBehaviour
     {
         // int stands for Unity instance id
-        private Dictionary<MasterCatalog.MasterIndex, int> pingedItems = new Dictionary<MasterCatalog.MasterIndex, int>();
+        private Dictionary<NetworkUserId, int> watchedPingedItems = new Dictionary<NetworkUserId, int>();
 
         public void Awake()
         {
+            On.RoR2.Run.OnDestroy += Run_OnDestroy;
+            On.RoR2.Run.OnServerSceneChanged += Run_OnServerSceneChanged;
             On.RoR2.PingerController.SetCurrentPing += PingerController_SetCurrentPing;
+        }
+
+        private void Run_OnDestroy(On.RoR2.Run.orig_OnDestroy orig, Run self)
+        {
+            orig(self);
+
+            watchedPingedItems.Clear();
+        }
+
+        private void Run_OnServerSceneChanged(On.RoR2.Run.orig_OnServerSceneChanged orig, Run self, string sceneName)
+        {
+            orig(self, sceneName);
+
+            watchedPingedItems.Clear();
         }
 
         private void PingerController_SetCurrentPing(On.RoR2.PingerController.orig_SetCurrentPing orig, PingerController self, PingerController.PingInfo newPingInfo)
         {
             orig(self, newPingInfo);
 
-            var player = self.GetComponent<CharacterMaster>();
+            var user = UsersHelper.GetUser(self);
             var item = newPingInfo.targetGameObject?.GetComponent<GenericPickupController>();
-            if (item && player)
+
+            if (item && user)
             {
-                pingedItems[player.masterIndex] = item.GetInstanceID();
+                watchedPingedItems[user.id] = item.GetInstanceID();
             }
-            else if (player)
+            else if (user)
             {
-                pingedItems.Remove(player.masterIndex);
+                watchedPingedItems.Remove(user.id);
             }
         }
 
-        public bool CheckIfItemPingedByPlayer(CharacterMaster player, GenericPickupController pickupController)
+        public bool CheckIfItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
         {
-            return player && pingedItems.TryGetValue(player.masterIndex, out var value) && value == pickupController.GetInstanceID();
+            return user && watchedPingedItems.TryGetValue(user.id, out var value) && value == pickupController.GetInstanceID();
         }
 
-        public bool TryRemoveItemPingedByPlayer(CharacterMaster player, GenericPickupController pickupController)
+        public bool TryConsumeItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
         {
-            if (CheckIfItemPingedByPlayer(player, pickupController))
+            if (CheckIfItemPingedByUser(user, pickupController))
             {
-                pingedItems.Remove(player.masterIndex);
+                watchedPingedItems.Remove(user.id);
                 return true;
             }
 
             return false;
-        }
-
-        public void ClearWatchedPingedItems()
-        {
-            pingedItems.Clear();
         }
     }
 }
