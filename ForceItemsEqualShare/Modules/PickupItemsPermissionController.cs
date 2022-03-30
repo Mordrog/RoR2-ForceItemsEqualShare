@@ -84,7 +84,7 @@ namespace Mordrog
             }
             else if (PluginConfig.HowToHandleItemDisproportion.Value == HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer)
             {
-                var userWithLeastItems = InventoryCostCounter.GetUserWithLeastItemsCosts().user;
+                var userWithLeastItems = InventoryCostCounter.GetUserWithLeastItemsCosts(false).user;
                 BoostPlayerWithRandomItem(userWithLeastItems);
 
                 orig(self, body);
