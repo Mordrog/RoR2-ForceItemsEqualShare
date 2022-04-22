@@ -66,6 +66,9 @@ If player can't pick item, they can ping it and use interaction button (E on key
 Find my other mods here: https://thunderstore.io/package/Mordrog/
 
 ### Changelog
+#### 1.3.2
+- Update manifest + rebuild on new patch
+
 #### 1.3.1
 - Fix for Survivors of the Void changes
 - Added void items to cost calculation, adequately to their tier
