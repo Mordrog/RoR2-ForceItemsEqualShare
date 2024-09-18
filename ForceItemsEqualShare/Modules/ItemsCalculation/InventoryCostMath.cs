@@ -6,6 +6,27 @@ namespace ForceItemsEqualShare
 {
     public static class InventoryCostMath
     {
+        public static List<NetworkUser> GetUsersWithLessInventoryCosts(NetworkUser user)
+        {
+            List<NetworkUser> usersWithLessInventoryCosts = new List<NetworkUser>();
+
+            var userInventoryCost = GetInventoryCost(user);
+            foreach (var otherUser in UsersHelper.GetAllUsers())
+            {
+                if (user == otherUser)
+                    continue;
+
+                var otherUserInventoryCost = GetInventoryCost(otherUser.master.inventory);
+                int inventoryCostDifference = userInventoryCost - Math.Min(otherUserInventoryCost, userInventoryCost);
+                if (inventoryCostDifference >= GetInventoryDifferenceCostThreshold(userInventoryCost))
+                {
+                    usersWithLessInventoryCosts.Add(otherUser);
+                }
+            }
+
+            return usersWithLessInventoryCosts;
+        }
+
         public static (NetworkUser user, int cost) GetUserWithLeastInventoryCosts(bool ignoreDeadUsers = true)
         {
             int leastInventoryCosts = int.MaxValue;

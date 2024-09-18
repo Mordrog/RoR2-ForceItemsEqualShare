@@ -87,8 +87,10 @@ namespace ForceItemsEqualShare
             }
             else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer)
             {
-                var userWithLeastItems = InventoryCostMath.GetUserWithLeastInventoryCosts(false).user;
-                BoostUserWithRandomItem(userWithLeastItems);
+                foreach (var otherUser in InventoryCostMath.GetUsersWithLessInventoryCosts(user))
+                {
+                    BoostUserWithRandomItem(otherUser);
+                }
 
                 orig(self, body);
                 return;
