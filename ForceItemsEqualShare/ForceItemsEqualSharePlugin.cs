@@ -90,6 +90,30 @@ namespace ForceItemsEqualShare
                 0,
                 "Cost of blue items"
             );
+
+            PluginConfig.WhiteItemBoostWeight = Config.Bind<float>(
+                "Settings",
+                "WhiteItemBoostWeight",
+                100.0f,
+                "Weight which indicate chance of player being boosted with white item.\n" +
+                "Have to be between 0 and 100. Works only with GiveRandomItemToLowestCostsPlayer"
+            );
+
+            PluginConfig.GreenItemBoostWeight = Config.Bind<float>(
+                "Settings",
+                "GreenItemBoostWeight",
+                20.0f,
+                "Weight which indicate chance of player being boosted with green item.\n" +
+                "Have to be between 0 and 100. Works only with GiveRandomItemToLowestCostsPlayer"
+            );
+
+            PluginConfig.RedItemBoostWeight = Config.Bind<float>(
+                "Settings",
+                "RedItemBoostWeight",
+                0.0f,
+                "Weight which indicate chance of player being boosted with red item.\n" +
+                "Have to be between 0 and 100. Works only with GiveRandomItemToLowestCostsPlayer"
+            );
         }
     }
 }

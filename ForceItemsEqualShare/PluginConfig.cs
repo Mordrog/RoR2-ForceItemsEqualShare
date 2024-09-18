@@ -9,6 +9,9 @@ namespace ForceItemsEqualShare
 
         public static ConfigEntry<float>
             ItemsCostsDifferenceThresholdScale,
+            WhiteItemBoostWeight,
+            GreenItemBoostWeight,
+            RedItemBoostWeight;
 
         public static ConfigEntry<uint>
             MinItemsCostsDifferenceThreshold,

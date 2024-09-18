@@ -108,8 +108,9 @@ namespace ForceItemsEqualShare
             try
             {
                 WeightedSelection<List<PickupIndex>> weightedSelection = new WeightedSelection<List<PickupIndex>>(8);
-                weightedSelection.AddChoice(Run.instance.availableTier1DropList, 100f);
-                weightedSelection.AddChoice(Run.instance.availableTier2DropList, 20f);
+                weightedSelection.AddChoice(Run.instance.availableTier1DropList, Math.Clamp(PluginConfig.WhiteItemBoostWeight.Value, 0.0f, 100.0f));
+                weightedSelection.AddChoice(Run.instance.availableTier2DropList, Math.Clamp(PluginConfig.GreenItemBoostWeight.Value, 0.0f, 100.0f));
+                weightedSelection.AddChoice(Run.instance.availableTier3DropList, Math.Clamp(PluginConfig.RedItemBoostWeight.Value, 0.0f, 100.0f));
 
                 List<PickupIndex> list = weightedSelection.Evaluate(UnityEngine.Random.value);
                 PickupDef pickupDef = PickupCatalog.GetPickupDef(list[UnityEngine.Random.Range(0, list.Count)]);
