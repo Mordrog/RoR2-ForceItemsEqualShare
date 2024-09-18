@@ -1,6 +1,6 @@
 ﻿using RoR2;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public static class ItemCostEvaluation
     {

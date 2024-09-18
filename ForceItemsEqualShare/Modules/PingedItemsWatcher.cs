@@ -2,12 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     class PingedItemsWatcher : NetworkBehaviour
     {
         // int stands for Unity instance id
         private Dictionary<NetworkUserId, int> watchedPingedItems = new Dictionary<NetworkUserId, int>();
+
+        public bool CheckIfItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
+        {
+            if (user)
+            {
+                return watchedPingedItems.TryGetValue(user.id, out var value) && value == pickupController.GetInstanceID();
+            }
+
+            return false;
+        }
+
+        public bool TryConsumeItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
+        {
+            if (CheckIfItemPingedByUser(user, pickupController))
+            {
+                watchedPingedItems.Remove(user.id);
+                return true;
+            }
+
+            return false;
+        }
 
         public void Awake()
         {
@@ -45,22 +66,6 @@ namespace Mordrog
             {
                 watchedPingedItems.Remove(user.id);
             }
-        }
-
-        public bool CheckIfItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
-        {
-            return user && watchedPingedItems.TryGetValue(user.id, out var value) && value == pickupController.GetInstanceID();
-        }
-
-        public bool TryConsumeItemPingedByUser(NetworkUser user, GenericPickupController pickupController)
-        {
-            if (CheckIfItemPingedByUser(user, pickupController))
-            {
-                watchedPingedItems.Remove(user.id);
-                return true;
-            }
-
-            return false;
         }
     }
 }

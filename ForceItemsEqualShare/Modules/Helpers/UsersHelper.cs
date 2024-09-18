@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public static class UsersHelper
     {

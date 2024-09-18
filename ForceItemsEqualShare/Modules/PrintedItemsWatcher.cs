@@ -2,11 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public class PrintedItemsWatcher : NetworkBehaviour
     {
-        private Dictionary<NetworkUserId, PrintedItems> watchedPrintedItems = new Dictionary<NetworkUserId, PrintedItems>();
+        private Dictionary<NetworkUserId, PrintedItems> userPrintedItems = new Dictionary<NetworkUserId, PrintedItems>();
+
+        public bool CheckIfUserHasPrintedItems(NetworkUser user, PickupIndex pickupIndex)
+        {
+            var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
+            var printedItems = GetUserPrintedItems(user);
+            return printedItems?.HasAnyPrintedItemOfTier(itemTier) ?? false;
+        }
+
+        public bool TryConsumeUserPrintedItem(NetworkUser user, PickupIndex pickupIndex)
+        {
+            var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
+            var printedItems = GetUserPrintedItems(user);
+            return printedItems?.RemovePrintedItemIfExists(itemTier) ?? false;
+        }
 
         public void Awake()
         {
@@ -19,14 +33,14 @@ namespace Mordrog
         {
             orig(self);
 
-            watchedPrintedItems.Clear();
+            userPrintedItems.Clear();
         }
 
         private void Run_OnServerSceneChanged(On.RoR2.Run.orig_OnServerSceneChanged orig, Run self, string sceneName)
         {
             orig(self, sceneName);
 
-            watchedPrintedItems.Clear();
+            userPrintedItems.Clear();
         }
 
         private void PurchaseInteraction_OnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
@@ -38,33 +52,25 @@ namespace Mordrog
 
             if (shopTerminal && user && CheckIfCostTypeIsItem(self.costType))
             {
-                if (!watchedPrintedItems.ContainsKey(user.id))
-                    watchedPrintedItems[user.id] = new PrintedItems();
-                watchedPrintedItems[user.id].AddPrintedItem(shopTerminal.itemTier);
+                if (!userPrintedItems.ContainsKey(user.id))
+                {
+                    userPrintedItems[user.id] = new PrintedItems();
+                }
+                userPrintedItems[user.id].AddPrintedItem(shopTerminal.itemTier);
             }
         }
 
-        public bool CheckIfUserHasPrintedItems(NetworkUser user, PickupIndex pickupIndex)
+        private PrintedItems GetUserPrintedItems(NetworkUser user)
         {
-            if (user && watchedPrintedItems.TryGetValue(user.id, out PrintedItems userPrintedItems))
+            if (user)
             {
-                
-                var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
-                return userPrintedItems.AreTherePrintedItems(itemTier);
+                if (userPrintedItems.TryGetValue(user.id, out PrintedItems printedItems))
+                {
+                    return printedItems;
+                }
             }
 
-            return false;
-        }
-
-        public bool TryConsumeUserPrintedItem(NetworkUser user, PickupIndex pickupIndex)
-        {
-            if (user && watchedPrintedItems.TryGetValue(user.id, out PrintedItems userPrintedItems))
-            {
-                var itemTier = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(pickupIndex).itemIndex).tier;
-                return userPrintedItems.RemovePrintedItemIfExists(itemTier);
-            }
-
-            return false;
+            return null;
         }
 
         private bool CheckIfCostTypeIsItem(CostTypeIndex costType)
@@ -79,14 +85,14 @@ namespace Mordrog
         {
             private SortedDictionary<ItemTier, uint> numberOfPrintedItemsByTier = new SortedDictionary<ItemTier, uint>();
 
-            public bool AreTherePrintedItems(ItemTier itemTier)
+            public bool HasAnyPrintedItemOfTier(ItemTier itemTier)
             {
                 return numberOfPrintedItemsByTier.TryGetValue(itemTier, out uint value) && value > 0;
             }
 
             public void AddPrintedItem(ItemTier itemTier)
             {
-                if (AreTherePrintedItems(itemTier))
+                if (HasAnyPrintedItemOfTier(itemTier))
                     numberOfPrintedItemsByTier[itemTier] += 1;
                 else
                     numberOfPrintedItemsByTier[itemTier] = 1;
@@ -94,7 +100,7 @@ namespace Mordrog
 
             public bool RemovePrintedItemIfExists(ItemTier itemTier)
             {
-                if (AreTherePrintedItems(itemTier))
+                if (HasAnyPrintedItemOfTier(itemTier))
                 {
                     numberOfPrintedItemsByTier[itemTier] -= 1;
                     return true;

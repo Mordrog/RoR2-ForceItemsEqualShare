@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public static class ChatHelper
     {
@@ -11,7 +11,7 @@ namespace Mordrog
 
         public static void PlayerHasTooManyItems(string userName)
         {
-            var message = $"<color=#{RedColor}>{userName} has too many items!</color> <color=#{GreenColor}>Share by</color> <color=#{SilverColor}>ping + E button.</color>";
+            var message = $"<color=#{RedColor}>{userName} has too many items!</color> <color=#{GreenColor}>Share by</color> <color=#{SilverColor}>ping + Interact button.</color>";
             RoR2.Chat.SendBroadcastChat(new RoR2.Chat.SimpleChatMessage { baseToken = message });
         }
 

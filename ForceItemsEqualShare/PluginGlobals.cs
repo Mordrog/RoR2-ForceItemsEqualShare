@@ -1,16 +1,13 @@
 ﻿using RoR2;
 using System.Collections.Generic;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public static class PluginGlobals
     {
-        public static string TooManyItemsMessage = "You have too many items, share some!";
-
         public static List<ItemDef> IgnoredCalculationItems = new List<ItemDef>
         {
             RoR2Content.Items.ArtifactKey,
-            RoR2Content.Items.ExtraLifeConsumed,
             RoR2Content.Items.TitanGoldDuringTP,
             RoR2Content.Items.TonicAffliction,
             RoR2Content.Items.CaptainDefenseMatrix,

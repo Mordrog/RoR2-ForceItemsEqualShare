@@ -1,18 +1,18 @@
 ﻿using BepInEx.Configuration;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     public static class PluginConfig
     {
-        public static ConfigEntry<HowToHandleItemDisproportion>
-            HowToHandleItemDisproportion;
+        public static ConfigEntry<HowToHandleItemsDisproportion>
+            HowToHandleItemsDisproportion;
 
         public static ConfigEntry<float>
-            ScaleItemsCostsDifference;
+            ItemsCostsDifferenceThresholdScale,
 
         public static ConfigEntry<uint>
-            MinItemsCostsDifference,
-            MaxItemsCostsDifference,
+            MinItemsCostsDifferenceThreshold,
+            MaxItemsCostsDifferenceThreshold,
             WhiteItemsCost,
             GreenItemsCost,
             RedItemsCost,

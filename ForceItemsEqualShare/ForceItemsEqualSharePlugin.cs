@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using R2API.Utils;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
     [BepInDependency("com.bepis.r2api")]
     [NetworkCompatibility(CompatibilityLevel.NoNeedForSync)]
@@ -19,41 +19,41 @@ namespace Mordrog
 
         public void Awake()
         {
-            base.gameObject.AddComponent<PickupItemsPermissionController>();
+            gameObject.AddComponent<PickupItemsPermissionController>();
         }
 
         private void InitConfig()
         {
-            PluginConfig.HowToHandleItemDisproportion = Config.Bind<HowToHandleItemDisproportion>(
+            PluginConfig.HowToHandleItemsDisproportion = Config.Bind<HowToHandleItemsDisproportion>(
                 "Settings",
-                "HowToHandleItemDisproportion",
-                HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer,
+                "HowToHandleItemsDisproportion",
+                HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer,
                 "Way to handle items disproportion between player with loweset and biggest item costs"
             );
 
-            PluginConfig.ScaleItemsCostsDifference = Config.Bind<float>(
+            PluginConfig.ItemsCostsDifferenceThresholdScale = Config.Bind<float>(
                 "Settings",
-                "ScaleItemsCostsDifference",
+                "ItemsCostsDifferenceThresholdScale",
                 0.3f,
-                "The scale items costs difference between the player picking item and the player with the lowest number of items costs.\n" +
-                "Too many items formula: Min(Max(PlayersItems * ScaleItemsDifference, MinItemsDifference), MaxItemsDifference) <= PlayersItems - LeastPlayerItems\n" +
+                "The items costs difference threshold scale for player picking item against the player with the lowest number of items costs.\n" +
+                "Too many items formula: Clamp(PlayersItemsCost * ItemsCostsDifferenceThresholdScale, MinItemsCostsDifferenceThreshold, MaxItemsCostsDifferenceThreshold) <= PlayersItemsCost - LeastPlayerItemsCost\n" +
                 "Have to be between 0 and 1"
             );
 
-            PluginConfig.MinItemsCostsDifference = Config.Bind<uint>(
+            PluginConfig.MinItemsCostsDifferenceThreshold = Config.Bind<uint>(
                 "Settings",
-                "MinItemsCostsDifference",
+                "MinItemsCostsDifferenceThreshold",
                 5,
-                "The min items costs difference between the player trying to pick an item and the player with the lowest number of items costs.\n" +
-                "Have to be equal or lesser then MaxItemsDifference"
+                "The min items costs difference threshold for player picking item against the player with the lowest number of items costs..\n" +
+                "Have to be equal or lesser then MaxItemsCostsDifferenceThreshold"
             );
 
-            PluginConfig.MaxItemsCostsDifference = Config.Bind<uint>(
+            PluginConfig.MaxItemsCostsDifferenceThreshold = Config.Bind<uint>(
                 "Settings",
-                "MaxItemsCostsDifference",
+                "MaxItemsCostsDifferenceThreshold",
                 15,
-                "The max items costs difference between the player trying to pick an item and the player with the lowest number of items costs.\n" +
-                "Have to be equal or bigger then MinItemsDifference"
+                "The max items costs difference threshold for player picking item against the player with the lowest number of items costs.\n" +
+                "Have to be equal or bigger then MinItemsCostsDifferenceThreshold"
             );
 
             PluginConfig.WhiteItemsCost = Config.Bind<uint>(

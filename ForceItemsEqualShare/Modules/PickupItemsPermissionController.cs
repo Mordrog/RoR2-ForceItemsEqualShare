@@ -1,10 +1,11 @@
 ﻿using RoR2;
+using System;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace Mordrog
+namespace ForceItemsEqualShare
 {
-    public enum HowToHandleItemDisproportion
+    public enum HowToHandleItemsDisproportion
     {
         GiveRandomItemToLowestCostsPlayer,
         PreventBiggestCostsPlayerPickup
@@ -17,8 +18,8 @@ namespace Mordrog
 
         public void Awake()
         {
-            printedItemsWatcher = base.gameObject.AddComponent<PrintedItemsWatcher>();
-            pingedItemsWatcher = base.gameObject.AddComponent<PingedItemsWatcher>();
+            printedItemsWatcher = gameObject.AddComponent<PrintedItemsWatcher>();
+            pingedItemsWatcher = gameObject.AddComponent<PingedItemsWatcher>();
 
             On.RoR2.GenericPickupController.AttemptGrant += GenericPickupController_AttemptGrant;
             On.RoR2.GenericPickupController.OnInteractionBegin += GenericPickupController_OnInteractionBegin;
@@ -43,8 +44,8 @@ namespace Mordrog
                 orig(self, activator);
                 return;
             }
-            // give random item to lowest cost player
-            else if (PluginConfig.HowToHandleItemDisproportion.Value == HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer)
+            // get item and boost players with item
+            else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer)
             {
                 orig(self, activator);
                 return;
@@ -52,7 +53,7 @@ namespace Mordrog
             // share item
             else if (pingedItemsWatcher.TryConsumeItemPingedByUser(user, self))
             {
-                var userWithLeastItems = InventoryCostCounter.GetUserWithLeastItemsCosts().user;
+                var userWithLeastItems = InventoryCostMath.GetUserWithLeastInventoryCosts().user;
                 var userWithLeastItemsInteractor = UsersHelper.GetUserInteractor(userWithLeastItems);
 
                 if (userWithLeastItemsInteractor)
@@ -65,6 +66,7 @@ namespace Mordrog
             }
         }
 
+        // Only happens if original GenericPickupController_OnInteractionBegin is fired
         private void GenericPickupController_AttemptGrant(On.RoR2.GenericPickupController.orig_AttemptGrant orig, GenericPickupController self, CharacterBody body)
         {
             if (!CheckIfCurrentStageQualifyForSharing() ||
@@ -76,16 +78,17 @@ namespace Mordrog
 
             var user = UsersHelper.GetUser(body);
 
+            // Allow user to pick up their printed item, even if they exceeds inventory costs threshold
             if (printedItemsWatcher.TryConsumeUserPrintedItem(user, self.pickupIndex) ||
                 CheckIfUserCanPickItem(user))
             {
                 orig(self, body);
                 return;
             }
-            else if (PluginConfig.HowToHandleItemDisproportion.Value == HowToHandleItemDisproportion.GiveRandomItemToLowestCostsPlayer)
+            else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer)
             {
-                var userWithLeastItems = InventoryCostCounter.GetUserWithLeastItemsCosts(false).user;
-                BoostPlayerWithRandomItem(userWithLeastItems);
+                var userWithLeastItems = InventoryCostMath.GetUserWithLeastInventoryCosts(false).user;
+                BoostUserWithRandomItem(userWithLeastItems);
 
                 orig(self, body);
                 return;
@@ -93,7 +96,7 @@ namespace Mordrog
         }
 
         // method copied from RoR2.Inventory::GiveRandomItems
-        private void BoostPlayerWithRandomItem(NetworkUser user)
+        private void BoostUserWithRandomItem(NetworkUser user)
         {
             if (!user || !user.master || !user.master.inventory)
                 return;
@@ -137,8 +140,7 @@ namespace Mordrog
                 return false;
 
             var userInventory = user.master.inventory;
-
-            return userInventory && !InventoryCostCounter.CheckIfInventoryHasTooMuchInventoryCost(userInventory);
+            return userInventory && !InventoryCostMath.CheckIfInventoryHasTooMuchInventoryCost(userInventory);
         }
     }
 }
