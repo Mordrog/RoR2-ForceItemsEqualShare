@@ -34,6 +34,9 @@ If player can't pick item, they can ping it and use interaction button (E on key
 | RedItemsCost                  |             4                     |
 | BossItemsCost                 |             2                     |
 | BlueItemsCost                 |             0                     |
+| WhiteItemBoostWeight          |           100                     |
+| GreenItemBoostWeight          |            20                     |
+| RedItemBoostWeight            |             0                     |
 
 ### Additional infos
 
@@ -45,7 +48,6 @@ If player can't pick item, they can ping it and use interaction button (E on key
 
 #### Items ignored in calulcation:
 - ArtifactKey
-- ExtraLifeConsumed
 - TitanGoldDuringTP
 - TonicAffliction
 - CaptainDefenseMatrix
@@ -66,6 +68,11 @@ If player can't pick item, they can ping it and use interaction button (E on key
 Find my other mods here: https://thunderstore.io/package/Mordrog/
 
 ### Changelog
+#### 1.3.3
+- Fix for Seekers of the Storm changes
+- Added item boost weight Settings
+- Updated item boosting, so now it can boost multiple players at once
+
 #### 1.3.2
 - Update manifest + rebuild on new patch
 
