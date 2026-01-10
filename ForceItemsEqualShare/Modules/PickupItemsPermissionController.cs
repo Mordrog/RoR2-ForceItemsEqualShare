@@ -36,6 +36,11 @@ namespace ForceItemsEqualShare
             }
 
             var user = UsersHelper.GetUser(activator);
+            if (!user)
+            {
+                orig(self, activator);
+                return;
+            }
 
             // get item
             if (printedItemsWatcher.CheckIfUserHasPrintedItems(user, self.pickupIndex) ||
@@ -77,6 +82,11 @@ namespace ForceItemsEqualShare
             }
 
             var user = UsersHelper.GetUser(body);
+            if (!user)
+            {
+                orig(self, body);
+                return;
+            }
 
             // Allow user to pick up their printed item, even if they exceeds inventory costs threshold
             if (printedItemsWatcher.TryConsumeUserPrintedItem(user, self.pickupIndex) ||
