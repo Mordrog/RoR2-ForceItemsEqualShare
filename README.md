@@ -68,6 +68,9 @@ If player can't pick item, they can ping it and use interaction button (E on key
 Find my other mods here: https://thunderstore.io/package/Mordrog/
 
 ### Changelog
+#### 1.4.0
+- Fix for Alloyed Collective changes
+
 #### 1.3.3
 - Fix for Seekers of the Storm changes
 - Added item boost weight Settings

@@ -8,7 +8,7 @@ namespace ForceItemsEqualShare
     [BepInPlugin(ModGuid, ModName, ModVer)]
     public class ForceItemsEqualSharePlugin : BaseUnityPlugin
     {
-        public const string ModVer = "1.3.2";
+        public const string ModVer = "1.4.0";
         public const string ModName = "ForceItemsEqualShare";
         public const string ModGuid = "com.Mordrog.ForceItemsEqualShare";
 
