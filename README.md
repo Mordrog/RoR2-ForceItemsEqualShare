@@ -9,6 +9,8 @@ Mod will prevent players from picking items if they have significantly more item
 
 #### - Block picking item for player with most inventory cost (allows for ping + interaction sharing)
 
+#### - Give a temporary red whip item to players who are behind
+
 ### How it works
 Let's say a player tries to pick an item. The mod calculates the total costs of this player's inventory and finds the player with the lowest total inventory costs.
 Now we take the difference between the costs of these inventory and see if it exceeds the threshold. If so, mod will try to deal with item disproportion.
@@ -34,6 +36,8 @@ If player can't pick item, they can ping it and use interaction button (E on key
 | RedItemsCost                  |             4                     |
 | BossItemsCost                 |             2                     |
 | BlueItemsCost                 |             0                     |
+| MealItemsCost                 |             4                     |
+| TempSpeedItemsCost            |             1                     |
 | WhiteItemBoostWeight          |           100                     |
 | GreenItemBoostWeight          |            20                     |
 | RedItemBoostWeight            |             0                     |
@@ -47,17 +51,22 @@ If player can't pick item, they can ping it and use interaction button (E on key
 - Moon2
 
 #### Items ignored in calulcation:
+- Untiered items
 - ArtifactKey
 - TitanGoldDuringTP
-- TonicAffliction
 - CaptainDefenseMatrix
+- TPHealingNova
+- MasterBattery
+- MasterCore
 
 #### Items ignored while picking up:
+- Untiered items
 - ArtifactKey
-- ExtraLifeConsumed
 - TitanGoldDuringTP
-- TonicAffliction
 - CaptainDefenseMatrix
+- TPHealingNova
+- MasterBattery
+- MasterCore
 - ScrapWhite
 - ScrapGreen
 - ScrapRed
