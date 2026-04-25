@@ -91,6 +91,20 @@ namespace ForceItemsEqualShare
                 "Cost of blue items"
             );
 
+            PluginConfig.MealItemsCost = Config.Bind<uint>(
+                "Settings",
+                "MealItemsCost",
+                4,
+                "Cost of meal items"
+             );
+
+            PluginConfig.TempSpeedItemsCost = Config.Bind<uint>(
+                "Settings",
+                "TempSpeedItemsCost",
+                1,
+                "Cost of temporary speed items. Works only with GiveTempSpeedItemToLowestCostsPlayer"
+            );
+
             PluginConfig.WhiteItemBoostWeight = Config.Bind<float>(
                 "Settings",
                 "WhiteItemBoostWeight",

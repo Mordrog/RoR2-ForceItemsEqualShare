@@ -20,6 +20,8 @@ namespace ForceItemsEqualShare
             GreenItemsCost,
             RedItemsCost,
             BossItemsCost,
-            BlueItemsCost;
+            BlueItemsCost,
+            MealItemsCost,
+            TempSpeedItemsCost;
     }
 }

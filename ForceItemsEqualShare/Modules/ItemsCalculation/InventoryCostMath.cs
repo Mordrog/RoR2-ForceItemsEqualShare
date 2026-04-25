@@ -78,8 +78,23 @@ namespace ForceItemsEqualShare
                     continue;
                 }
 
-                var numberOfStacks = inventory.GetItemCount(itemIndex);
-                InventoryCosts += ItemCostEvaluation.GetItemCostEvaluation(itemIndex, numberOfStacks);
+                var itemDef = ItemCatalog.GetItemDef(itemIndex);
+
+                if (itemDef.hidden)
+                {
+                    continue;
+                }
+
+                var numberOfStacks = inventory.GetItemCountPermanent(itemDef);
+                InventoryCosts += ItemCostEvaluation.GetItemCostEvaluation(itemDef, numberOfStacks);
+
+                if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveTempSpeedToLowestCostsPlayer)
+                {
+                    if (itemDef == PluginGlobals.SpeedItem)
+                    {
+                        InventoryCosts += inventory.GetItemCountTemp(itemDef) * (int)PluginConfig.TempSpeedItemsCost.Value;
+                    }
+                }
             }
 
             return InventoryCosts;
