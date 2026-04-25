@@ -8,7 +8,8 @@ namespace ForceItemsEqualShare
     public enum HowToHandleItemsDisproportion
     {
         GiveRandomItemToLowestCostsPlayer,
-        PreventBiggestCostsPlayerPickup
+        PreventBiggestCostsPlayerPickup,
+        GiveTempSpeedToLowestCostsPlayer
     }
 
     public class PickupItemsPermissionController : NetworkBehaviour
@@ -50,7 +51,8 @@ namespace ForceItemsEqualShare
                 return;
             }
             // get item and boost players with item
-            else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer)
+            else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveRandomItemToLowestCostsPlayer ||
+                PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveTempSpeedToLowestCostsPlayer)
             {
                 orig(self, activator);
                 return;
@@ -105,6 +107,16 @@ namespace ForceItemsEqualShare
                 orig(self, body);
                 return;
             }
+            else if (PluginConfig.HowToHandleItemsDisproportion.Value == HowToHandleItemsDisproportion.GiveTempSpeedToLowestCostsPlayer)
+            {
+                foreach (var otherUser in InventoryCostMath.GetUsersWithLessInventoryCosts(user))
+                {
+                    BoostUserWithTempSpeedItem(otherUser);
+                }
+
+                orig(self, body);
+                return;
+            }
         }
 
         // method copied from RoR2.Inventory::GiveRandomItems
@@ -133,6 +145,26 @@ namespace ForceItemsEqualShare
             }
         }
 
+        private void BoostUserWithTempSpeedItem(NetworkUser user)
+        {
+            if (!user || !user.master || !user.master.inventory)
+                return;
+
+            var inventory = user.master.inventory;
+
+            try
+            {
+                inventory.GiveItemTemp(PluginGlobals.SpeedItem.itemIndex);
+
+                PickupIndex pickupIndex = PickupCatalog.FindPickupIndex(PluginGlobals.SpeedItem.itemIndex);
+                PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
+                ChatHelper.PlayerBoostedWithItem(user.userName, pickupDef.nameToken, pickupDef.baseColor);
+            }
+            catch (System.ArgumentException)
+            {
+            }
+        }
+
         private bool CheckIfCurrentStageQualifyForSharing()
         {
             return !PluginGlobals.IgnoredStages.Contains(SceneCatalog.GetSceneDefForCurrentScene().baseSceneName);
@@ -143,6 +175,7 @@ namespace ForceItemsEqualShare
             var pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
 
             return pickupDef.itemIndex != ItemIndex.None &&
+                   pickupDef.itemTier != ItemTier.NoTier &&
                    !pickupDef.isLunar &&
                    !PluginGlobals.IgnoredPickupItems.Find(i => i.itemIndex == pickupDef.itemIndex);
         }

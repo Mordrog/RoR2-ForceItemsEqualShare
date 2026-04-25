@@ -91,6 +91,13 @@ namespace ForceItemsEqualShare
                 "Cost of blue items"
             );
 
+            PluginConfig.MealItemsCost = Config.Bind<uint>(
+                "Settings",
+                "MealItemsCost",
+                4,
+                "Cost of meal items"
+             );
+
             PluginConfig.WhiteItemBoostWeight = Config.Bind<float>(
                 "Settings",
                 "WhiteItemBoostWeight",

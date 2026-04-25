@@ -4,9 +4,15 @@ namespace ForceItemsEqualShare
 {
     public static class ItemCostEvaluation
     {
-        public static int GetItemCostEvaluation(ItemIndex item, int numberOfStacks = 1)
+        public static int GetItemCostEvaluation(ItemDef item, int numberOfStacks = 1)
         {
-            return numberOfStacks * GetItemTierCostEvaluation(ItemCatalog.GetItemDef(item).tier);
+            var tier = item.tier;
+            if (PluginGlobals.RegeneratingGreenItems.Contains(item))
+            {
+                tier = ItemTier.Tier2;
+            }
+
+            return numberOfStacks * GetItemTierCostEvaluation(tier);
         }
 
         public static int GetItemTierCostEvaluation(ItemTier itemTier)
@@ -27,6 +33,8 @@ namespace ForceItemsEqualShare
                     return (int)PluginConfig.BossItemsCost.Value;
                 case ItemTier.Lunar:
                     return (int)PluginConfig.BlueItemsCost.Value;
+                case ItemTier.FoodTier:
+                    return (int)PluginConfig.MealItemsCost.Value;
                 case ItemTier.NoTier:
                 default:
                     return 0;
