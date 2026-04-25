@@ -9,7 +9,7 @@ Mod will prevent players from picking items if they have significantly more item
 
 #### - Block picking item for player with most inventory cost (allows for ping + interaction sharing)
 
-#### - Give a temporary red whip item to players who are behind
+#### - Give a temporary energy drink item to players who are behind
 
 ### How it works
 Let's say a player tries to pick an item. The mod calculates the total costs of this player's inventory and finds the player with the lowest total inventory costs.
@@ -37,7 +37,6 @@ If player can't pick item, they can ping it and use interaction button (E on key
 | BossItemsCost                 |             2                     |
 | BlueItemsCost                 |             0                     |
 | MealItemsCost                 |             4                     |
-| TempSpeedItemsCost            |             1                     |
 | WhiteItemBoostWeight          |           100                     |
 | GreenItemBoostWeight          |            20                     |
 | RedItemBoostWeight            |             0                     |

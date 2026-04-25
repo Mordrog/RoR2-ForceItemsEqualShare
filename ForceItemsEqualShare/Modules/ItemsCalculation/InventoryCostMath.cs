@@ -92,7 +92,7 @@ namespace ForceItemsEqualShare
                 {
                     if (itemDef == PluginGlobals.SpeedItem)
                     {
-                        InventoryCosts += inventory.GetItemCountTemp(itemDef) * (int)PluginConfig.TempSpeedItemsCost.Value;
+                        InventoryCosts += inventory.GetItemCountTemp(itemDef);
                     }
                 }
             }

@@ -21,7 +21,6 @@ namespace ForceItemsEqualShare
             RedItemsCost,
             BossItemsCost,
             BlueItemsCost,
-            MealItemsCost,
-            TempSpeedItemsCost;
+            MealItemsCost;
     }
 }

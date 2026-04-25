@@ -37,7 +37,7 @@ namespace ForceItemsEqualShare
             DLC2Content.Items.TeleportOnLowHealthConsumed,
         };
 
-        public static ItemDef SpeedItem = RoR2Content.Items.SprintOutOfCombat;
+        public static ItemDef SpeedItem = RoR2Content.Items.SprintBonus;
 
         //Lol is there better way to store/check stages?!?
         public static List<string> IgnoredStages = new List<string>
